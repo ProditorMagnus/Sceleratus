@@ -9,7 +9,7 @@ function botVersion() {
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
 API.on(API.CHAT, chatcallback);
-API.on(API.USER_LEAVE, userLeave(data));
+API.on(API.USER_LEAVE, userLeave);
 
 function djadvancecallback(obj) {
     var currentDJ = obj.dj;
