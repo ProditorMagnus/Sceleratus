@@ -273,7 +273,6 @@ function captureUserLeave(data){
       leftUserList.length++;
     }
     leftUserList[data.username] = {'pos': data.wlIndex, 'time': Date.now()};
-    localStorage.setItem('leftUsers', JSON.stringify(leftUserList));
   }
   if(((Date.now() - leftUserList.reset) / 1000) > leaveLimit){
     for(var key in leftUserList){
@@ -281,7 +280,9 @@ function captureUserLeave(data){
         delete leftUserList[key];
       }
     }
+	leftUserList.reset = Date.now();
   }
+  localStorage.setItem('leftUsers', JSON.stringify(leftUserList));
 }
 
 function lookupUserLeave(name){
