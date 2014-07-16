@@ -299,7 +299,6 @@ function lookupUserLeave(name){
     else{
       API.sendChat('/me → @' + name + ' not found in list of disconnected users');
     }
-  }
 }
 
 function toPrettyTime(secs) {
