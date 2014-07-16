@@ -78,7 +78,7 @@ function laelaCommand(id,arg) {
     API.moderateRemoveDJ(arg[0]);
   break;
   case 'version':
-    API.sendChat("Current bot version: "+botVersion());
+    API.sendChat("Current Sceleratus version: "+botVersion());
   break;
   case 'stats':
     if (!arg.length) {arg[0] = "Sceleratus";}
@@ -114,7 +114,7 @@ function publicCommand(id,arg) {
     API.sendChat("Current public commands: stats, statsid, getid, genre, version. Prefix: " + prefix);
   break;
   case 'version':
-    API.sendChat("Current version: "+botVersion());
+    API.sendChat("Current Sceleratus version: "+botVersion());
   break;
   case 'stats':
     if (!arg.length) {arg[0] = "Sceleratus";}
