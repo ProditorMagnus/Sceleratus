@@ -286,7 +286,7 @@ function captureUserLeave(data){
 }
 
 function lookupUserLeave(name){
-    var name = parts[1].replace('@', '');
+    var name = name.replace('@', '');
     var user = leftUserList[name];
     if(user){
       API.sendChat('/me → @' + name + ' left position ' + (user.pos + 1) + ' about ' + toPrettyTime((Date.now() - user.time) / 1000) + ' ago' );
