@@ -1,7 +1,7 @@
 var prefix = "%";
  
 function botVersion() {
-   return "0.2.1a";
+   return "0.2.1b";
 }
  
 function djadvancecallback(obj) {
@@ -215,7 +215,7 @@ function handleWiki(url, author){
                                 return;
                         }
                         else{
-                                genreBotFailed('Error while getting page of '+author);
+                                genreBotFailed('Page of '+author+' not found');
                                 return;
                         }
                 }
