@@ -32,6 +32,9 @@ function laelaCommand(id,arg) {
         arg = [];
   }
   switch (id) {
+  case 'help':
+    API.sendChat("Current public commands: stats, statsid, getid, genre, version. Prefix: " + prefix);
+  break;
   case 'meh':
     $('#meh').click()
   break;
