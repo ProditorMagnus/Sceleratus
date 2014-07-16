@@ -292,19 +292,18 @@ function captureUserLeave(data){
 }
 
 function lookupUserLeave(name){
-    var name = parts[1].replace('@', '');
-    var user = leftUserList[name];
-    if(user){
-      API.sendChat('/me → ' + name + ' left position ' + (user.pos + 1) + ' about ' + toPrettyTime((Date.now() - user.time) / 1000) + ' ago' );
-      if(((Date.now() - user.time) / 1000) <= autoAdd){
-        API.moderateAddDJ(user.id);
-        API.moderateMoveDJ(user.id, user.pos);
-        API.sendChat('/me → Automatically added ' + name + ' back in line');
-      }
+  var name = parts[1].replace('@', '');
+  var user = leftUserList[name];
+  if(user){
+    API.sendChat('/me → ' + name + ' left position ' + (user.pos + 1) + ' about ' + toPrettyTime((Date.now() - user.time) / 1000) + ' ago' );
+    if(((Date.now() - user.time) / 1000) <= autoAdd){
+      API.moderateAddDJ(user.id);
+      API.moderateMoveDJ(user.id, user.pos);
+      API.sendChat('/me → Automatically added ' + name + ' back in line');
     }
-    else{
-      API.sendChat('/me → ' + name + ' not found in list of disconnected users');
-    }
+  }
+  else{
+    API.sendChat('/me → ' + name + ' not found in list of disconnected users');
   }
 }
 
