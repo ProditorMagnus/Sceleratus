@@ -1,6 +1,7 @@
 var prefix = "%";
 var leaveLimit = 1800;
 var autoAdd = 600;
+var leftUserList = JSON.parse(localStorage.getItem('leftUsers')) ? JSON.parse(localStorage.getItem('leftUsers')) : {length: 0, reset: Date.now()};
 
 function botVersion() {
   return "0.3.0-beta";
@@ -266,13 +267,12 @@ function genreBotFailed(reason){
   API.sendChat(reason);
 }
 
-var leftUserList = JSON.parse(localStorage.getItem('leftUsers')) ? JSON.parse(localStorage.getItem('leftUsers')) : {length: 0, reset: Date.now()};
 function captureUserLeave(data){
   if(data.wlIndex && data.wlIndex > 0){
     if(!leftUserList[data.username]){
       leftUserList.length++;
     }
-    leftUserList[data.username] = {'pos': data.wlIndex, 'time': Date.now()};
+    leftUserList[data.username] = {'pos': data.wlIndex, 'time': Date.now(), 'id': data.id};
   }
   if(((Date.now() - leftUserList.reset) / 1000) > leaveLimit){
     for(var key in leftUserList){
@@ -291,8 +291,8 @@ function lookupUserLeave(name){
     if(user){
       API.sendChat('/me → @' + name + ' left position ' + (user.pos + 1) + ' about ' + toPrettyTime((Date.now() - user.time) / 1000) + ' ago' );
       if(((Date.now() - user.time) / 1000) <= autoAdd){
-        API.moderateAddDJ(name);
-        API.moderateMoveDJ(name, user.pos);
+        API.moderateAddDJ(user.id);
+        API.moderateMoveDJ(user.id, user.pos);
         API.sendChat('/me → Automatically added @' + name + ' back in line');
       }
     }
