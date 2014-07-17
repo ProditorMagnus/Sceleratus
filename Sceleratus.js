@@ -249,6 +249,7 @@ function captureUserLeave(data) {
         for (var key in leftUserList) {
             if (((Date.now() - leftUserList[key].time) / 1000) > leaveLimit) {
                 delete leftUserList[key];
+				leftUserList--;
             }
         }
         leftUserList.reset = Date.now();
