@@ -239,7 +239,7 @@ function genreBotFailed(reason) {
 }
 
 function captureUserLeave(data) {
-    if (data.wlIndex && data.wlIndex > 0) {
+    if (data.wlIndex) {
         if (!leftUserList[data.username]) {
             leftUserList.length++;
         }
@@ -264,7 +264,7 @@ function lookupUserLeave(name) {
         API.sendChat('/me → @' + name + ' left position ' + (user.pos + 1) + ' about ' + toPrettyTime((Date.now() - user.time) / 1000) + ' ago');
         if (((Date.now() - user.time) / 1000) <= autoAdd) {
             API.moderateAddDJ(user.id);
-            API.moderateMoveDJ(user.id, user.pos);
+            API.moderateMoveDJ(user.id, user.pos + 1);
             API.sendChat('/me → Automatically added @' + name + ' back in line');
         }
     } 
