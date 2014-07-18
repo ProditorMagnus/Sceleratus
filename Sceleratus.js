@@ -47,13 +47,13 @@ function chatcallback(data) {
             cmdParts.splice(0, 1);
 			var leftovers = [];
 			while(cmdParts.lenght < 0){
-				if(usersInRoom[cmdParts.join(' ')){
+				if(usersInRoom[cmdParts.join(' ').replace('@', ''){
 					break;
 				}
 				leftovers.unshift(cmdParts.splice(cmdParts.length - 1, 1));
 			}
 			if(cmdParts.length > 0){
-				arguments.push(cmdParts.join(' ')).concat(leftovers);
+				arguments.push(cmdParts.join(' ').replace('@', '')).concat(leftovers);
 			}
 			else{
 				arguments = leftovers;
@@ -292,7 +292,6 @@ function captureUserLeave(data) {
 }
 
 function lookupUserLeave(name) {
-    var name = name.replace('@', '');
     var user = leftUserList[name];
     if (user) {
         API.sendChat('/me → @' + name + ' left position ' + (user.pos + 1) + ' about ' + toPrettyTime((Date.now() - user.time) / 1000) + ' ago');
