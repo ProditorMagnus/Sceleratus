@@ -41,9 +41,9 @@ function chatcallback(data) {
             }
             var cmdParts = data.message.split(" ");
             var cmdBase = cmdParts[0].replace(prefix, "");
-            cmdParts.splice(0, 1)
+            cmdParts.splice(0, 1);
             if (commands[cmdBase] && commands[cmdBase].level <= userLevel) {
-                commands[cmdBase].execute(cmdParts)
+                commands[cmdBase].execute(cmdParts.join(' '));
             } 
             else {
                 API.sendChat("Command not found or insufficient permissions");
@@ -79,7 +79,7 @@ var commands = {
             document.location = 'http://plug.dj/epic-room-20/';
         }},
     'goto': {level: 1,execute: function(arg) {
-            var newloc = "http://plug.dj/" + arg[0];
+            var newloc = "http://plug.dj/" + arg;
             document.location = newloc;
         }},
     'join': {level: 1,execute: function(arg) {
@@ -102,38 +102,38 @@ var commands = {
         }},
     'add': {level: 1,execute: function(arg) {
             if (!arg.length) {
-                arg[0] = "5394868d96fba54fbc290223";
+                arg = "5394868d96fba54fbc290223";
             }
-            API.moderateAddDJ(arg[0]);
+            API.moderateAddDJ(arg);
         }},
     'remove': {level: 1,execute: function(arg) {
             if (!arg.length) {
-                arg[0] = "5394868d96fba54fbc290223";
+                arg = "5394868d96fba54fbc290223";
             }
-            API.moderateRemoveDJ(arg[0]);
+            API.moderateRemoveDJ(arg);
         }},
     'version': {level: 0,execute: function(arg) {
             API.sendChat("Current bot version: " + botVersion());
         }},
     'stats': {level: 0,execute: function(arg) {
             if (!arg.length) {
-                arg[0] = "Sceleratus";
+                arg = "Sceleratus";
             }
-            var user = API.getUser(getId(arg[0]));
+            var user = API.getUser(getId(arg));
             API.sendChat(user.username + ": grabs received: " + user.curatorPoints + ", woots received: " + user.djPoints + ", woots/mehs given: " + user.listenerPoints);
         }},
     'statsid': {level: 0,execute: function(arg) {
             if (!arg.length) {
-                arg[0] = "5394868d96fba54fbc290223";
+                arg = "5394868d96fba54fbc290223";
             }
-            var user = API.getUser(arg[0]);
+            var user = API.getUser(arg);
             API.sendChat(user.username + ": grabs received: " + user.curatorPoints + ", woots received: " + user.djPoints + ", woots/mehs given: " + user.listenerPoints);
         }},
     'getid': {level: 0,execute: function(arg) {
             if (!arg.length) {
-                arg[0] = "Sceleratus";
+                arg = "Sceleratus";
             }
-            API.sendChat("User id of: " + arg[0] + " = " + getId(arg[0]));
+            API.sendChat("User id of: " + arg + " = " + getId(arg));
         }},
     'genre': {level: 0,execute: function(arg) {
             var media = API.getMedia();
@@ -144,7 +144,7 @@ var commands = {
             API.sendChat("Current public commands: stats, statsid, getid, genre, dc, version. Prefix: " + prefix);
         }},
     'dc': {level: 0,execute: function(arg) {
-            lookupUserLeave(arg[1]);
+            lookupUserLeave(arg);
         }},
 }
 
