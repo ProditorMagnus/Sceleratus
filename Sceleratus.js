@@ -2,10 +2,10 @@ var prefix = "%";
 var leaveLimit = 1800;
 var autoAdd = 1800;
 var leftUserList = JSON.parse(localStorage.getItem('leftUsers')) ? JSON.parse(localStorage.getItem('leftUsers')) : {length: 0,reset: Date.now()};
-var commandSender = "";
+var commandSender = ""; // username
 
 function botVersion() {
-    return "0.5.0a";
+    return "0.5.0b";
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -143,8 +143,14 @@ var commands = {
             handleWiki(url, media.author);
         }},
     'help': {level: 0,execute: function(arg) {
-            API.sendChat("Current public commands: help, stats, statsid, getid, genre, dc, version. Prefix: " + prefix);
-        }},
+			var cmds = [];
+			for(var key in commands){
+				if(commands[key].level = 0){
+					cmds.push(key);
+				}
+			}
+            API.sendChat("Current public commands: " + cmds.join(', ') + ". Prefix: " + prefix);
+		}},
     'dc': {level: 0,execute: function(arg) {
 			if (!arg.length) {
                 arg[0] = commandSender;
