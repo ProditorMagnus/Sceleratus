@@ -2,6 +2,7 @@ var prefix = "%";
 var leaveLimit = 1800;
 var autoAdd = 600;
 var leftUserList = JSON.parse(localStorage.getItem('leftUsers')) ? JSON.parse(localStorage.getItem('leftUsers')) : {length: 0,reset: Date.now()};
+var usersInRoom = {};
 
 function botVersion() {
     return "0.4.0-beta";
@@ -10,6 +11,7 @@ function botVersion() {
 API.on(API.DJ_ADVANCE, djadvancecallback);
 API.on(API.CHAT, chatcallback);
 API.on(API.USER_LEAVE, userLeave);
+API.on(API.USER_JOIN, userJoin);
 
 function djadvancecallback(obj) {
     var currentDJ = obj.dj;
@@ -41,9 +43,23 @@ function chatcallback(data) {
             }
             var cmdParts = data.message.split(" ");
             var cmdBase = cmdParts[0].replace(prefix, "");
+			var arguments = [];
             cmdParts.splice(0, 1);
+			var leftovers = [];
+			while(cmdParts.lenght < 0){
+				if(usersInRoom[cmdParts.join(' ')){
+					break;
+				}
+				leftovers.unshift(cmdParts.splice(cmdParts.length - 1, 1));
+			}
+			if(cmdParts.length > 0){
+				arguments.push(cmdParts.join(' ')).concat(leftovers);
+			}
+			else{
+				arguments = leftovers;
+			}
             if (commands[cmdBase] && commands[cmdBase].level <= userLevel) {
-                commands[cmdBase].execute(cmdParts.join(' '));
+                commands[cmdBase].execute(arguments);
             } 
             else {
                 API.sendChat("Command not found or insufficient permissions");
@@ -55,6 +71,13 @@ function chatcallback(data) {
 
 function userLeave(data) {
     captureUserLeave(data);
+	delete usersInRoom[data.username];
+	usersInRoom.length--;
+}
+
+function userJoin(data) {
+    usersInRoom[data.username] = data;
+	usersInRoom.length++;
 }
 
 var commands = {
@@ -79,7 +102,7 @@ var commands = {
             document.location = 'http://plug.dj/epic-room-20/';
         }},
     'goto': {level: 1,execute: function(arg) {
-            var newloc = "http://plug.dj/" + arg;
+            var newloc = "http://plug.dj/" + arg[0];
             document.location = newloc;
         }},
     'join': {level: 1,execute: function(arg) {
@@ -102,13 +125,13 @@ var commands = {
         }},
     'add': {level: 1,execute: function(arg) {
             if (!arg.length) {
-                arg = "5394868d96fba54fbc290223";
+                arg[0] = "5394868d96fba54fbc290223";
             }
             API.moderateAddDJ(arg);
         }},
     'remove': {level: 1,execute: function(arg) {
             if (!arg.length) {
-                arg = "5394868d96fba54fbc290223";
+                arg[0] = "5394868d96fba54fbc290223";
             }
             API.moderateRemoveDJ(arg);
         }},
@@ -117,23 +140,23 @@ var commands = {
         }},
     'stats': {level: 0,execute: function(arg) {
             if (!arg.length) {
-                arg = "Sceleratus";
+                arg[0] = "Sceleratus";
             }
             var user = API.getUser(getId(arg));
             API.sendChat(user.username + ": grabs received: " + user.curatorPoints + ", woots received: " + user.djPoints + ", woots/mehs given: " + user.listenerPoints);
         }},
     'statsid': {level: 0,execute: function(arg) {
             if (!arg.length) {
-                arg = "5394868d96fba54fbc290223";
+                arg[0] = "5394868d96fba54fbc290223";
             }
             var user = API.getUser(arg);
             API.sendChat(user.username + ": grabs received: " + user.curatorPoints + ", woots received: " + user.djPoints + ", woots/mehs given: " + user.listenerPoints);
         }},
     'getid': {level: 0,execute: function(arg) {
             if (!arg.length) {
-                arg = "Sceleratus";
+                arg[0] = "Sceleratus";
             }
-            API.sendChat("User id of: " + arg + " = " + getId(arg));
+            API.sendChat("User id of: " + arg[0] + " = " + getId(arg[0]));
         }},
     'genre': {level: 0,execute: function(arg) {
             var media = API.getMedia();
@@ -144,7 +167,7 @@ var commands = {
             API.sendChat("Current public commands: stats, statsid, getid, genre, dc, version. Prefix: " + prefix);
         }},
     'dc': {level: 0,execute: function(arg) {
-            lookupUserLeave(arg);
+            lookupUserLeave(arg[0]);
         }},
 }
 
@@ -163,6 +186,11 @@ function botConnect() {
     if (document.location == 'http://plug.dj/epic-room-20/') {
         API.sendChat("Sceleratus " + botVersion() + " is connected");
     }
+	var users = API.getUsers();
+	for(var i = 0; i < users.length; i++){
+		usersInRoom[users[i].username] = users[i];
+		usersInRoom.length++;
+	}
 }
 
 window.onload = botConnect();
