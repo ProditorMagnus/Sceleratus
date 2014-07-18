@@ -164,7 +164,13 @@ var commands = {
             handleWiki(url, media.author);
         }},
     'help': {level: 0,execute: function(arg) {
-            API.sendChat("Current public commands: stats, statsid, getid, genre, dc, version. Prefix: " + prefix);
+			var cmds = [];
+			for(var key in commands){
+				if(commands[key].level = 0){
+					cmds.push(key);
+				}
+			}
+            API.sendChat("Current public commands: " + cmds.join(', ') + ". Prefix: " + prefix);
         }},
     'dc': {level: 0,execute: function(arg) {
             lookupUserLeave(arg[0]);
