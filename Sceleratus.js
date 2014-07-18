@@ -5,7 +5,7 @@ var leftUserList = JSON.parse(localStorage.getItem('leftUsers')) ? JSON.parse(lo
 var commandSender = "";
 
 function botVersion() {
-    return "0.5.0";
+    return "0.5.0a";
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -39,7 +39,7 @@ function chatcallback(data) {
             var userLevel = 0;
 			commandSender = data.from;
             if (data.fromID === "53517697c3b97a1d6548a7ea") {
-                userLevel = 1;
+                userLevel = 13;
             }
             var cmdParts = data.message.split(" ");
             var cmdBase = cmdParts[0].replace(prefix, "");
@@ -61,54 +61,54 @@ function userLeave(data) {
 
 var commands = {
     
-    'meh': {level: 1,execute: function(arg) {
+    'meh': {level: 13,execute: function(arg) {
             $('#meh').click();
         }},
     
-    'woot': {level: 1,execute: function(arg) {
+    'woot': {level: 13,execute: function(arg) {
             $('#woot').click();
         }},
-    'reload': {level: 1,execute: function(arg) {
+    'reload': {level: 13,execute: function(arg) {
             location.reload(true);
         }},
-    'reload': {level: 1,execute: function(arg) {
+    'reload': {level: 13,execute: function(arg) {
             location.reload(true);
         }},
-    'debug': {level: 1,execute: function(arg) {
+    'debug': {level: 13,execute: function(arg) {
             document.location = 'http://plug.dj/804060f5/';
         }},
-    'eesti': {level: 1,execute: function(arg) {
+    'eesti': {level: 13,execute: function(arg) {
             document.location = 'http://plug.dj/epic-room-20/';
         }},
-    'goto': {level: 1,execute: function(arg) {
+    'goto': {level: 13,execute: function(arg) {
             var newloc = "http://plug.dj/" + arg[0];
             document.location = newloc;
         }},
-    'join': {level: 1,execute: function(arg) {
+    'join': {level: 13,execute: function(arg) {
             API.djJoin();
         }},
-    'echo': {level: 1,execute: function(arg) {
+    'echo': {level: 13,execute: function(arg) {
             API.sendChat(arg.join(" "));
         }},
-    'leave': {level: 1,execute: function(arg) {
+    'leave': {level: 13,execute: function(arg) {
             API.djLeave();
         }},
-    'skip': {level: 1,execute: function(arg) {
+    'skip': {level: 13,execute: function(arg) {
             API.moderateForceSkip();
         }},
-    'ban': {level: 1,execute: function(arg) {
+    'ban': {level: 13,execute: function(arg) {
             API.moderateBanUser(arg[0], arg[1], API.BAN.HOUR);
         }},
-    'kick': {level: 1,execute: function(arg) {
+    'kick': {level: 13,execute: function(arg) {
             API.sendChat("Command disabled");
         }},
-    'add': {level: 1,execute: function(arg) {
+    'add': {level: 13,execute: function(arg) {
             if (!arg.length) {
                 arg[0] = "5394868d96fba54fbc290223";
             }
             API.moderateAddDJ(arg[0]);
         }},
-    'remove': {level: 1,execute: function(arg) {
+    'remove': {level: 13,execute: function(arg) {
             if (!arg.length) {
                 arg[0] = "5394868d96fba54fbc290223";
             }
