@@ -145,7 +145,7 @@ var commands = {
     'help': {level: 0,execute: function(arg) {
 			var cmds = [];
 			for(var key in commands){
-				if(commands[key].level = 0){
+				if(commands[key].level == 0){
 					cmds.push(key);
 				}
 			}
