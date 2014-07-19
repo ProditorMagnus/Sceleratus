@@ -5,7 +5,7 @@ var leftUserList = JSON.parse(localStorage.getItem('leftUsers')) ? JSON.parse(lo
 var commandSender = ""; // username
 
 function botVersion() {
-    return "0.5.0b";
+    return "0.5.1";
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -143,13 +143,16 @@ var commands = {
             handleWiki(url, media.author);
         }},
     'help': {level: 0,execute: function(arg) {
+			if (!arg.length) {
+                arg[0] = 0;
+            }
 			var cmds = [];
 			for(var key in commands){
-				if(commands[key].level == 0){
+				if(commands[key].level <= arg[0]){
 					cmds.push(key);
 				}
 			}
-            API.sendChat("Current public commands: " + cmds.join(', ') + ". Prefix: " + prefix);
+            API.sendChat("Current commands for level "+ arg[0] +": " + cmds.join(', ') + ". Prefix: " + prefix);
 		}},
     'dc': {level: 0,execute: function(arg) {
 			if (!arg.length) {
