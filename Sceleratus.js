@@ -78,14 +78,14 @@ var commands = {
   },
 
   'meh': {
-    level: 2,
+    level: 11,
     execute: function (arg) {
       $('#meh').click();
     }
   },
 
   'woot': {
-    level: 2,
+    level: 11,
     execute: function (arg) {
       $('#woot').click();
     }
@@ -202,15 +202,6 @@ var commands = {
         arg[0] = "Sceleratus";
       }
       API.sendChat("User id of: " + arg[0] + " = " + getId(arg[0]));
-    }
-  },
-  'getroomaccess': {
-    level: 99,
-    execute: function (arg) {
-      if (!arg.length) {
-        arg[0] = "Sceleratus";
-      }
-      API.sendChat("Access of: " + arg[0] + " = " + getRoomLevel(getId(arg[0])));
     }
   },
   'genre': {
