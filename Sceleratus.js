@@ -9,7 +9,7 @@ var commandSender = ""; // username
 var userLevel;
 
 function botVersion() {
-  return "0.5.1j";
+  return "0.5.1k";
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -267,6 +267,7 @@ var access = {
   '5394868d96fba54fbc290223': 18,
   '517c1ba43e083e70b32e86fa': 19,
   '539752a33b79031dadb6ddb4': 13,
+  '52d9a11c877b922bd6c4f1f9': 13,
 }
 
 function getId(name) {
