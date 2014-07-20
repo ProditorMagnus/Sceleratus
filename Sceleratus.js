@@ -9,7 +9,7 @@ var commandSender = ""; // username
 var userLevel;
 
 function botVersion() {
-  return "0.5.1f";
+  return "0.5.1h";
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -70,8 +70,8 @@ var commands = {
     execute: function (arg) {
       var userid = arg[0];
       var level = arg[1];
-      if (level >= userLevel) {
-        API.sendChat("Refused to give >= your access");
+      if (level >= userLevel || access[userid] > level ) {
+        API.sendChat("Refused to change access");
       }
       access[userid] = level;
     }
@@ -106,6 +106,18 @@ var commands = {
     level: 19,
     execute: function (arg) {
       document.location = 'http://plug.dj/epic-room-20/';
+    }
+  },
+  'metal': {
+    level: 19,
+    execute: function (arg) {
+      document.location = 'http://plug.dj/house-of-rock-metal/';
+    }
+  },
+  'electrosheep': {
+    level: 19,
+    execute: function (arg) {
+      document.location = 'http://plug.dj/electrosheep/';
     }
   },
   'goto': {
@@ -241,6 +253,7 @@ var commands = {
 var access = {
   '53517697c3b97a1d6548a7ea': 99,
   '5394868d96fba54fbc290223': 18,
+  '517c1ba43e083e70b32e86fa': 19,
 }
 
 function getId(name) {
