@@ -3,9 +3,10 @@ var leaveLimit = 1800;
 var autoAdd = 1800;
 var leftUserList = JSON.parse(localStorage.getItem('leftUsers')) ? JSON.parse(localStorage.getItem('leftUsers')) : {length: 0,reset: Date.now()};
 var commandSender = ""; // username
+var userLevel;
 
 function botVersion() {
-    return "0.5.1";
+    return "0.5.1f";
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -36,11 +37,11 @@ function djadvancecallback(obj) {
 function chatcallback(data) {
     if (data.type === "message") {
         if (data.message.lastIndexOf(prefix, 0) == 0) {
-            var userLevel = 0;
+            userLevel = getRoomLevel(data.fromID);
 			commandSender = data.from;
-            if (data.fromID === "53517697c3b97a1d6548a7ea") {
-                userLevel = 13;
-            }
+			if (access[data.fromID]) {
+				userLevel = access[data.fromID];
+			}
             var cmdParts = data.message.split(" ");
             var cmdBase = cmdParts[0].replace(prefix, "");
             cmdParts.splice(0, 1);
@@ -48,7 +49,9 @@ function chatcallback(data) {
                 commands[cmdBase].execute(cmdParts);
             } 
             else {
-                API.sendChat("Command not found or insufficient permissions");
+                if (commands[cmdBase]) {
+					API.sendChat("Access "+commands[cmdBase].level+" is required, you have "+userLevel);
+				}
             }
             API.moderateDeleteChat(data.chatID);
         }
@@ -60,55 +63,60 @@ function userLeave(data) {
 }
 
 var commands = {
+	'access': {level: 11,execute: function(arg) {
+            var userid = arg[0];
+			var level = arg[1];
+			if (level >= userLevel) {
+				API.sendChat("Refused to give >= your access");
+			}
+			access[ userid ] = level;
+        }},
     
-    'meh': {level: 13,execute: function(arg) {
+    'meh': {level: 2,execute: function(arg) {
             $('#meh').click();
         }},
     
-    'woot': {level: 13,execute: function(arg) {
+    'woot': {level: 2,execute: function(arg) {
             $('#woot').click();
         }},
-    'reload': {level: 13,execute: function(arg) {
+    'reload': {level: 19,execute: function(arg) {
             location.reload(true);
         }},
-    'reload': {level: 13,execute: function(arg) {
-            location.reload(true);
-        }},
-    'debug': {level: 13,execute: function(arg) {
+    'debug': {level: 19,execute: function(arg) {
             document.location = 'http://plug.dj/804060f5/';
         }},
-    'eesti': {level: 13,execute: function(arg) {
+    'eesti': {level: 19,execute: function(arg) {
             document.location = 'http://plug.dj/epic-room-20/';
         }},
-    'goto': {level: 13,execute: function(arg) {
+    'goto': {level: 20,execute: function(arg) {
             var newloc = "http://plug.dj/" + arg[0];
             document.location = newloc;
         }},
-    'join': {level: 13,execute: function(arg) {
+    'join': {level: 12,execute: function(arg) {
             API.djJoin();
         }},
-    'echo': {level: 13,execute: function(arg) {
+    'echo': {level: 20,execute: function(arg) {
             API.sendChat(arg.join(" "));
         }},
     'leave': {level: 13,execute: function(arg) {
             API.djLeave();
         }},
-    'skip': {level: 13,execute: function(arg) {
+    'skip': {level: 12,execute: function(arg) {
             API.moderateForceSkip();
         }},
-    'ban': {level: 13,execute: function(arg) {
+    'ban': {level: 12,execute: function(arg) {
             API.moderateBanUser(arg[0], arg[1], API.BAN.HOUR);
         }},
-    'kick': {level: 13,execute: function(arg) {
+    'kick': {level: 12,execute: function(arg) {
             API.sendChat("Command disabled");
         }},
-    'add': {level: 13,execute: function(arg) {
+    'add': {level: 12,execute: function(arg) {
             if (!arg.length) {
                 arg[0] = "5394868d96fba54fbc290223";
             }
             API.moderateAddDJ(arg[0]);
         }},
-    'remove': {level: 13,execute: function(arg) {
+    'remove': {level: 12,execute: function(arg) {
             if (!arg.length) {
                 arg[0] = "5394868d96fba54fbc290223";
             }
@@ -137,6 +145,12 @@ var commands = {
             }
             API.sendChat("User id of: " + arg[0] + " = " + getId(arg[0]));
         }},
+	'getroomaccess': {level: 99,execute: function(arg) {
+            if (!arg.length) {
+                arg[0] = "Sceleratus";
+            }
+            API.sendChat("Access of: " + arg[0] + " = " + getRoomLevel(getId(arg[0])));
+        }},
     'genre': {level: 0,execute: function(arg) {
             var media = API.getMedia();
             var url = 'http://en.wikipedia.org/wiki/' + media.author.replace(/ /g, '_');
@@ -162,6 +176,11 @@ var commands = {
         }},
 }
 
+var access = {
+	'53517697c3b97a1d6548a7ea':99, 
+	'5394868d96fba54fbc290223':18, 
+}
+
 
 function getId(name) {
     users = API.getUsers();
@@ -172,6 +191,10 @@ function getId(name) {
         }
     }
 }
+function getRoomLevel(id) {
+    return API.getUser(id).permission
+}
+
 
 function botConnect() {
     if (document.URL == 'http://plug.dj/epic-room-20/') {
