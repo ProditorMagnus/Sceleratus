@@ -9,7 +9,7 @@ var commandSender = ""; // username
 var userLevel;
 
 function botVersion() {
-  return "0.5.1h";
+  return "0.5.1j";
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -91,7 +91,7 @@ var commands = {
     }
   },
   'reload': {
-    level: 19,
+    level: 13,
     execute: function (arg) {
       location.reload(true);
     }
@@ -120,6 +120,12 @@ var commands = {
       document.location = 'http://plug.dj/electrosheep/';
     }
   },
+  'fantasy': {
+    level: 19,
+    execute: function (arg) {
+      document.location = 'http://plug.dj/fantasytunes/';
+    }
+  },
   'goto': {
     level: 20,
     execute: function (arg) {
@@ -128,7 +134,7 @@ var commands = {
     }
   },
   'join': {
-    level: 12,
+    level: 16,
     execute: function (arg) {
       API.djJoin();
     }
@@ -140,31 +146,31 @@ var commands = {
     }
   },
   'leave': {
-    level: 13,
+    level: 16,
     execute: function (arg) {
       API.djLeave();
     }
   },
   'skip': {
-    level: 12,
+    level: 14,
     execute: function (arg) {
       API.moderateForceSkip();
     }
   },
   'ban': {
-    level: 12,
+    level: 17,
     execute: function (arg) {
       API.moderateBanUser(arg[0], arg[1], API.BAN.HOUR);
     }
   },
   'kick': {
-    level: 12,
+    level: 16,
     execute: function (arg) {
       API.sendChat("Command disabled");
     }
   },
   'add': {
-    level: 12,
+    level: 16,
     execute: function (arg) {
       if (!arg.length) {
         arg[0] = "5394868d96fba54fbc290223";
@@ -173,7 +179,7 @@ var commands = {
     }
   },
   'remove': {
-    level: 12,
+    level: 16,
     execute: function (arg) {
       if (!arg.length) {
         arg[0] = "5394868d96fba54fbc290223";
@@ -185,6 +191,12 @@ var commands = {
     level: 0,
     execute: function (arg) {
       API.sendChat("Current Sceleratus version: " + botVersion());
+    }
+  },
+  'source': {
+    level: 0,
+    execute: function (arg) {
+      API.sendChat("Sceleratus source: https://github.com/ProditorMagnus/Sceleratus");
     }
   },
   'stats': {
@@ -254,6 +266,7 @@ var access = {
   '53517697c3b97a1d6548a7ea': 99,
   '5394868d96fba54fbc290223': 18,
   '517c1ba43e083e70b32e86fa': 19,
+  '539752a33b79031dadb6ddb4': 13,
 }
 
 function getId(name) {
