@@ -9,7 +9,7 @@ var commandSender = ""; // username
 var userLevel;
 
 function botVersion() {
-  return "0.5.1k";
+  return "0.5.1m";
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -70,10 +70,11 @@ var commands = {
     execute: function (arg) {
       var userid = arg[0];
       var level = arg[1];
-      if (level >= userLevel || access[userid] > level ) {
+      if (level >= userLevel || userLevel < access[userid] ) {
         API.sendChat("Refused to change access");
-      }
-      access[userid] = level;
+      } else {
+        access[userid] = level;
+	  }
     }
   },
 
