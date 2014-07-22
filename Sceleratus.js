@@ -1,6 +1,6 @@
 var prefix = "%";
-var leaveLimit = 1800;
-var autoAdd = 1800;
+var leaveLimit = 180000;
+var autoAdd = 180000;
 var leftUserList = JSON.parse(localStorage.getItem('leftUsers')) ? JSON.parse(localStorage.getItem('leftUsers')) : {
   length: 0,
   reset: Date.now()
@@ -9,7 +9,41 @@ var commandSender = ""; // username
 var userLevel;
 
 function botVersion() {
-  return "0.5.1m";
+  return "0.5.2b";
+}
+
+function accessName(accessNumber) {
+  switch (accessNumber) {
+    case 99:
+      return "admin (99)";
+    break;
+	case 98:
+      return "local (98)";
+    break;
+	case 97:
+      return "alt (97)";
+    break;
+    case 19:
+      return "master (19)";
+    break;
+    case 13:
+      return "friend (13)";
+    break;
+    case 0:
+      return "unset (0)";
+    break;
+    case -1:
+      return "blacklisted (-1)";
+    break;
+    case -2:
+      return "muted (-2)";
+    break;
+    case -3:
+      return "banned (-3)";
+    break;
+    default:
+      return accessNumber;
+  }
 }
 
 API.on(API.DJ_ADVANCE, djadvancecallback);
@@ -70,11 +104,29 @@ var commands = {
     execute: function (arg) {
       var userid = arg[0];
       var level = arg[1];
-      if (level >= userLevel || userLevel < access[userid] ) {
+      if (level >= userLevel || userLevel < access[userid] || !level ) {
         API.sendChat("Refused to change access");
       } else {
         access[userid] = level;
 	  }
+    }
+  },
+  
+  'whoami': {
+    level: 0,
+    execute: function (arg) {
+      API.sendChat("Access of: " + commandSender + " = " + accessName(userLevel));
+    }
+  },
+  
+  'whois': {
+    level: 0,
+    execute: function (arg) {
+	  var whoisvar = getRoomLevel(getId(arg[0]));
+	  if (access[getId(arg[0])]) {
+        whoisvar = access[getId(arg[0])];
+      }
+      API.sendChat("Access of: " + arg[0] + " = " + accessName(whoisvar));
     }
   },
 
@@ -135,7 +187,7 @@ var commands = {
     }
   },
   'join': {
-    level: 16,
+    level: 11,
     execute: function (arg) {
       API.djJoin();
     }
@@ -147,7 +199,7 @@ var commands = {
     }
   },
   'leave': {
-    level: 16,
+    level: 15,
     execute: function (arg) {
       API.djLeave();
     }
@@ -171,7 +223,7 @@ var commands = {
     }
   },
   'add': {
-    level: 16,
+    level: 15,
     execute: function (arg) {
       if (!arg.length) {
         arg[0] = "5394868d96fba54fbc290223";
@@ -240,16 +292,19 @@ var commands = {
   'help': {
     level: 0,
     execute: function (arg) {
-      if (!arg.length) {
+      if (!arg[0]) {
         arg[0] = 0;
+      }
+	  if (!arg[1]) {
+        arg[1] = 0;
       }
       var cmds = [];
       for (var key in commands) {
-        if (commands[key].level <= arg[0]) {
+        if (commands[key].level <= arg[1] && commands[key].level >= arg[0]) {
           cmds.push(key);
         }
       }
-      API.sendChat("Current commands for level " + arg[0] + ": " + cmds.join(', ') + ". Prefix: " + prefix);
+      API.sendChat("Current commands for levels " + arg[0] + " .. " + arg[1] + ": " + cmds.join(', ') + ". Prefix: " + prefix);
     }
   },
   'dc': {
@@ -265,10 +320,14 @@ var commands = {
 
 var access = {
   '53517697c3b97a1d6548a7ea': 99,
-  '5394868d96fba54fbc290223': 18,
+  '5394868d96fba54fbc290223': 98,
+  '53b015f496fba536c9cc98fc': 97,
   '517c1ba43e083e70b32e86fa': 19,
   '539752a33b79031dadb6ddb4': 13,
   '52d9a11c877b922bd6c4f1f9': 13,
+  '523846b596fba524e52455d1': 15,
+  '539380f2877b922c44913ce6': -1,
+  '53206c213b790372077d6dee': 13,
 }
 
 function getId(name) {
@@ -363,7 +422,7 @@ function genreBotFailed(reason) {
 }
 
 function captureUserLeave(data) {
-  if (data.wlIndex) {
+  if (data.wlIndex > -1) {
     if (!leftUserList[data.username]) {
       leftUserList.length++;
     }
@@ -377,7 +436,7 @@ function captureUserLeave(data) {
     for (var key in leftUserList) {
       if (((Date.now() - leftUserList[key].time) / 1000) > leaveLimit) {
         delete leftUserList[key];
-        leftUserList--;
+        leftUserList.length--;
       }
     }
     leftUserList.reset = Date.now();
