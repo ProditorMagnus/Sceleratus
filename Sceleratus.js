@@ -9,7 +9,7 @@ var commandSender = ""; // username
 var userLevel;
 
 function botVersion() {
-  return "0.5.2b";
+  return "0.5.3";
 }
 
 function accessName(accessNumber) {
@@ -41,6 +41,9 @@ function accessName(accessNumber) {
     case -3:
       return "banned (-3)";
     break;
+	case 'undefined':
+      return "bugged (undefined)";
+    break;
     default:
       return accessNumber;
   }
@@ -55,14 +58,19 @@ function djadvancecallback(obj) {
   setTimeout(function () {
     var reason = "";
     var skipcondition = false;
-    if (API.getTimeRemaining() > 420) {
+	if (songLimit[document.URL] > 0) {
+		var skipLength = songLimit[document.URL];
+	} else {
+		var skipLength = 420;
+	}
+    if (API.getTimeRemaining() > skipLength) {
       skipcondition = true;
       reason = "Too long";
     }
     if (skipcondition && currentDJ.id != "53517697c3b97a1d6548a7ea" && currentDJ.id != "5394868d96fba54fbc290223" && !currentDJ.permission) {
       $('#meh').click();
       API.moderateRemoveDJ(currentDJ.id);
-      if (document.URL == 'http://plug.dj/epic-room-20/') {
+      if (document.URL == 'http://plug.dj/epic-room-20/' || doc.URL == 'http://plug.dj/just-good-music-37/') {
         API.sendChat(reason + "!! Trying to skip..");
       }
     } else {
@@ -173,12 +181,6 @@ var commands = {
       document.location = 'http://plug.dj/electrosheep/';
     }
   },
-  'fantasy': {
-    level: 19,
-    execute: function (arg) {
-      document.location = 'http://plug.dj/fantasytunes/';
-    }
-  },
   'goto': {
     level: 20,
     execute: function (arg) {
@@ -284,9 +286,15 @@ var commands = {
   'genre': {
     level: 0,
     execute: function (arg) {
-      var media = API.getMedia();
-      var url = 'http://en.wikipedia.org/wiki/' + media.author.replace(/ /g, '_');
-      handleWiki(url, media.author);
+	  if (!arg.length) {
+        var media = API.getMedia();
+        var url = 'http://en.wikipedia.org/wiki/' + media.author.replace(/ /g, '_');
+        handleWiki(url, media.author);
+      } else {
+		var author = arg.join(" ");
+		var url = 'http://en.wikipedia.org/wiki/' + author.replace(/ /g, '_');
+        handleWiki(url, author);
+	  }
     }
   },
   'help': {
@@ -328,6 +336,11 @@ var access = {
   '523846b596fba524e52455d1': 15,
   '539380f2877b922c44913ce6': -1,
   '53206c213b790372077d6dee': 13,
+  '53d38ffd3b7903262ef89d49': 13,
+}
+
+var songLimit = {
+  'http://plug.dj/just-good-music-37/': 600,
 }
 
 function getId(name) {
